@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#1A1A2E" />
+    <meta
+      name="description"
+      content="Folio — A premium PDF reading experience"
+    />
+    <title>Kogo Reader — Read Beautifully</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="theme-light" data-view="library">
+    <!-- ════════════════════════════════════════════
+       LIBRARY VIEW (Home Screen)
+  ════════════════════════════════════════════ -->
+    <div id="library-view" class="view active">
+      <!-- Library Navbar -->
+      <header class="lib-header">
+        <div class="lib-header-inner">
+          <div class="logo">
+            <span class="logo-mark">𝕂𝔾</span>
+            <span class="logo-text">Kogo Reader</span>
+          </div>
+          <div class="lib-actions">
+            <button
+              class="btn-icon"
+              id="lib-theme-toggle"
+              title="Toggle theme"
+              aria-label="Toggle theme"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+            </button>
+            <button
+              class="btn-icon"
+              id="open-stats-btn"
+              title="Reading stats"
+              aria-label="Reading statistics"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Quote Banner -->
+      <div class="quote-banner" id="quote-banner">
+        <p class="quote-text" id="quote-text"></p>
+        <span class="quote-author" id="quote-author"></span>
+      </div>
+
+      <!-- Upload Drop Zone -->
+      <div class="upload-section">
+        <div
+          class="drop-zone"
+          id="drop-zone"
+          role="button"
+          tabindex="0"
+          aria-label="Drop PDF here or click to browse"
+        >
+          <div class="drop-icon">
+            <svg
+              viewBox="0 0 48 48"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path
+                d="M28 8H12a4 4 0 00-4 4v24a4 4 0 004 4h24a4 4 0 004-4V20z"
+              />
+              <polyline points="28 8 28 20 40 20" />
+              <line x1="24" y1="28" x2="24" y2="36" />
+              <polyline points="20 32 24 36 28 32" />
+            </svg>
+          </div>
+          <p class="drop-title">Drop your PDF here</p>
+          <p class="drop-sub">or <span class="drop-link">browse files</span></p>
+          <input
+            type="file"
+            id="file-input"
+            accept=".pdf"
+            multiple
+            aria-label="Upload PDF files"
+          />
+        </div>
+      </div>
+
+      <!-- Continue Reading -->
+      <section class="lib-section" id="continue-section" style="display: none">
+        <h2 class="section-title">Continue Reading</h2>
+        <div class="book-shelf" id="continue-shelf"></div>
+      </section>
+
+      <!-- Uploaded Books -->
+      <section class="lib-section" id="uploaded-section" style="display: none">
+        <h2 class="section-title">Your Library</h2>
+        <div class="book-shelf" id="uploaded-shelf"></div>
+      </section>
+
+      <!-- Built-in Books -->
+      <section class="lib-section" id="builtin-section">
+        <h2 class="section-title">Sample Books</h2>
+        <div class="book-shelf" id="builtin-shelf">
+          <div class="empty-shelf">
+            <p>
+              Place PDF files in the <code>/books</code> folder to see them
+              here.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reading Stats Preview -->
+      <section
+        class="lib-section stats-preview-section"
+        id="stats-preview-section"
+      >
+        <h2 class="section-title">Reading Insights</h2>
+        <div class="stats-grid-mini" id="stats-grid-mini"></div>
+      </section>
+    </div>
+    <!-- /library-view -->
+
+    <!-- ════════════════════════════════════════════
+       READER VIEW
+  ════════════════════════════════════════════ -->
+    <div id="reader-view" class="view">
+      <!-- TOP NAVBAR -->
+      <nav
+        class="reader-nav"
+        id="reader-nav"
+        role="navigation"
+        aria-label="Reader controls"
+      >
+        <div class="nav-left">
+          <button
+            class="btn-icon"
+            id="back-to-library"
+            title="Back to Library (L)"
+            aria-label="Back to library"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <button
+            class="btn-icon sidebar-toggle"
+            id="sidebar-toggle"
+            title="Toggle sidebar"
+            aria-label="Toggle sidebar"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <span class="book-title-nav" id="book-title-nav"></span>
+        </div>
+        <div class="nav-center">
+          <div class="search-bar" id="search-bar">
+            <svg
+              class="search-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search in book…"
+              aria-label="Search in book"
+            />
+            <span class="search-count" id="search-count"></span>
+            <button
+              class="btn-icon search-nav"
+              id="search-prev"
+              title="Previous result"
+              aria-label="Previous search result"
+            >
+              &#8593;
+            </button>
+            <button
+              class="btn-icon search-nav"
+              id="search-next"
+              title="Next result"
+              aria-label="Next search result"
+            >
+              &#8595;
+            </button>
+            <button
+              class="btn-icon"
+              id="search-close"
+              aria-label="Close search"
+            >
+              ×
+            </button>
+          </div>
+          <button
+            class="btn-icon"
+            id="search-open-btn"
+            title="Search (Ctrl+F)"
+            aria-label="Open search"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </button>
+        </div>
+        <div class="nav-right">
+          <div class="zoom-control">
+            <button
+              class="btn-icon"
+              id="zoom-out"
+              title="Zoom out (-)"
+              aria-label="Zoom out"
+            >
+              −
+            </button>
+            <span class="zoom-level" id="zoom-level">100%</span>
+            <button
+              class="btn-icon"
+              id="zoom-in"
+              title="Zoom in (+)"
+              aria-label="Zoom in"
+            >
+              +
+            </button>
+          </div>
+          <button
+            class="btn-icon"
+            id="bookmark-btn"
+            title="Bookmark page (B)"
+            aria-label="Bookmark page"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+            </svg>
+          </button>
+          <button
+            class="btn-icon"
+            id="theme-toggle-reader"
+            title="Toggle theme (D)"
+            aria-label="Toggle theme"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
+          </button>
+          <button
+            class="btn-icon"
+            id="settings-btn"
+            title="Settings (S)"
+            aria-label="Settings"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"
+              />
+            </svg>
+          </button>
+          <button
+            class="btn-icon"
+            id="fullscreen-btn"
+            title="Fullscreen (F)"
+            aria-label="Toggle fullscreen"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <polyline points="15 3 21 3 21 9" />
+              <polyline points="9 21 3 21 3 15" />
+              <line x1="21" y1="3" x2="14" y2="10" />
+              <line x1="3" y1="21" x2="10" y2="14" />
+            </svg>
+          </button>
+          <button
+            class="btn-icon"
+            id="hide-ui-btn"
+            title="Focus mode (H)"
+            aria-label="Toggle focus mode"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path
+                d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"
+              />
+              <path
+                d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"
+              />
+              <line x1="1" y1="1" x2="23" y2="23" />
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      <!-- READER BODY -->
+      <div class="reader-body">
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar" id="sidebar" aria-label="Book navigation">
+          <div class="sidebar-tabs">
+            <button
+              class="sidebar-tab active"
+              data-tab="contents"
+              aria-selected="true"
+            >
+              Contents
+            </button>
+            <button
+              class="sidebar-tab"
+              data-tab="bookmarks"
+              aria-selected="false"
+            >
+              Marks
+            </button>
+            <button
+              class="sidebar-tab"
+              data-tab="thumbnails"
+              aria-selected="false"
+            >
+              Pages
+            </button>
+          </div>
+
+          <!-- TOC Tab -->
+          <div class="sidebar-panel active" id="panel-contents">
+            <div class="panel-search">
+              <input
+                type="text"
+                id="toc-search"
+                placeholder="Search contents…"
+                aria-label="Search table of contents"
+              />
+            </div>
+            <div class="toc-list" id="toc-list">
+              <p class="panel-empty">
+                Table of contents will appear here when available.
+              </p>
+            </div>
+          </div>
+
+          <!-- Bookmarks Tab -->
+          <div class="sidebar-panel" id="panel-bookmarks">
+            <div class="bookmarks-list" id="bookmarks-list">
+              <p class="panel-empty">
+                No bookmarks yet. Press <kbd>B</kbd> to add one.
+              </p>
+            </div>
+          </div>
+
+          <!-- Thumbnails Tab -->
+          <div class="sidebar-panel" id="panel-thumbnails">
+            <div class="thumb-grid" id="thumb-grid"></div>
+          </div>
+        </aside>
+
+        <!-- MAIN CANVAS AREA -->
+        <main
+          class="reader-main"
+          id="reader-main"
+          role="main"
+          aria-label="PDF reader"
+        >
+          <!-- Loading State -->
+          <div class="reader-loading" id="reader-loading">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Opening your book…</p>
+          </div>
+
+          <!-- PDF Viewport -->
+          <div
+            class="pdf-viewport"
+            id="pdf-viewport"
+            tabindex="0"
+            aria-label="PDF document"
+          >
+            <div class="pages-container" id="pages-container"></div>
+          </div>
+
+          <!-- Page Nav Buttons (Mobile / Desktop) -->
+          <button
+            class="page-nav-btn prev-btn"
+            id="prev-page-btn"
+            aria-label="Previous page"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <button
+            class="page-nav-btn next-btn"
+            id="next-page-btn"
+            aria-label="Next page"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </main>
+      </div>
+      <!-- /reader-body -->
+
+      <!-- BOTTOM BAR -->
+      <div class="bottom-bar" id="bottom-bar">
+        <div class="bottom-left">
+          <span class="page-info" id="page-info">Page 1 of 1</span>
+          <span class="read-time" id="read-time-est"></span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+          <input
+            type="range"
+            class="progress-slider"
+            id="progress-slider"
+            min="1"
+            max="1"
+            value="1"
+            aria-label="Page progress"
+          />
+        </div>
+        <div class="bottom-right">
+          <span class="progress-pct" id="progress-pct">0%</span>
+          <span class="wpm-badge" id="wpm-badge"></span>
+        </div>
+      </div>
+
+      <!-- Jump to Page -->
+      <div
+        class="jump-overlay"
+        id="jump-overlay"
+        style="display: none"
+        role="dialog"
+        aria-label="Jump to page"
+      >
+        <input
+          type="number"
+          id="jump-input"
+          placeholder="Page number…"
+          min="1"
+          aria-label="Enter page number"
+        />
+        <button id="jump-go">Go</button>
+      </div>
+    </div>
+    <!-- /reader-view -->
+
+    <!-- ════════════════════════════════════════════
+       SETTINGS PANEL
+  ════════════════════════════════════════════ -->
+    <div
+      class="overlay-panel"
+      id="settings-panel"
+      role="dialog"
+      aria-label="Settings"
+      aria-modal="true"
+      style="display: none"
+    >
+      <div class="panel-card">
+        <div class="panel-header">
+          <h2>Settings</h2>
+          <button
+            class="btn-icon panel-close"
+            id="settings-close"
+            aria-label="Close settings"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="settings-body">
+          <!-- Theme -->
+          <div class="setting-group">
+            <label class="setting-label">Theme</label>
+            <div class="theme-swatches">
+              <button class="swatch" data-theme="light" title="Light">
+                Light
+              </button>
+              <button class="swatch" data-theme="dark" title="Dark">
+                Dark
+              </button>
+              <button class="swatch" data-theme="sepia" title="Sepia">
+                Sepia
+              </button>
+              <button class="swatch" data-theme="paper" title="Paper">
+                Paper
+              </button>
+              <button class="swatch" data-theme="oled" title="OLED Black">
+                OLED
+              </button>
+            </div>
+          </div>
+
+          <!-- View Mode -->
+          <div class="setting-group">
+            <label class="setting-label">View Mode</label>
+            <div class="mode-pills">
+              <button class="pill active" data-mode="continuous">
+                Continuous
+              </button>
+              <button class="pill" data-mode="single">Single Page</button>
+              <button class="pill" data-mode="double">Double Page</button>
+            </div>
+          </div>
+
+          <!-- Font Size -->
+          <div class="setting-group">
+            <label class="setting-label"
+              >Zoom <span id="zoom-val-display">100%</span></label
+            >
+            <input
+              type="range"
+              id="zoom-range"
+              min="50"
+              max="300"
+              value="100"
+              class="range-slider"
+              aria-label="Zoom level"
+            />
+          </div>
+
+          <!-- Typography -->
+          <div class="setting-group">
+            <label class="setting-label"
+              >Page Margin <span id="margin-val">Normal</span></label
+            >
+            <input
+              type="range"
+              id="margin-range"
+              min="0"
+              max="3"
+              value="1"
+              step="1"
+              class="range-slider"
+              aria-label="Page margin"
+            />
+          </div>
+
+          <!-- Reading Width -->
+          <div class="setting-group">
+            <label class="setting-label">Fit Mode</label>
+            <div class="mode-pills">
+              <button class="pill fit-pill active" data-fit="width">
+                Fit Width
+              </button>
+              <button class="pill fit-pill" data-fit="page">Fit Page</button>
+              <button class="pill fit-pill" data-fit="actual">
+                Actual Size
+              </button>
+            </div>
+          </div>
+
+          <!-- Eye Comfort -->
+          <div class="setting-group">
+            <label class="setting-label">Eye Comfort</label>
+            <div class="toggle-row">
+              <span>Blue light filter</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="blue-light-toggle" />
+                <span class="toggle-knob"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <span>Break reminder (30 min)</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="break-reminder-toggle" />
+                <span class="toggle-knob"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Ambient Sound -->
+          <div class="setting-group">
+            <label class="setting-label">Ambient Sound</label>
+            <div class="sound-pills">
+              <button class="pill sound-pill" data-sound="off">Off</button>
+              <button class="pill sound-pill" data-sound="rain">Rain</button>
+              <button class="pill sound-pill" data-sound="library">
+                Library
+              </button>
+              <button class="pill sound-pill" data-sound="forest">
+                Forest
+              </button>
+              <button class="pill sound-pill" data-sound="fire">
+                Fireplace
+              </button>
+            </div>
+          </div>
+
+          <!-- Keyboard Shortcuts -->
+          <div class="setting-group">
+            <label class="setting-label">Keyboard Shortcuts</label>
+            <div class="shortcuts-list">
+              <div class="shortcut-row">
+                <kbd>←</kbd><kbd>→</kbd> <span>Previous / Next Page</span>
+              </div>
+              <div class="shortcut-row">
+                <kbd>Ctrl+F</kbd> <span>Search</span>
+              </div>
+              <div class="shortcut-row">
+                <kbd>B</kbd> <span>Toggle Bookmark</span>
+              </div>
+              <div class="shortcut-row">
+                <kbd>F</kbd> <span>Fullscreen</span>
+              </div>
+              <div class="shortcut-row">
+                <kbd>H</kbd> <span>Focus Mode</span>
+              </div>
+              <div class="shortcut-row">
+                <kbd>D</kbd> <span>Dark Mode</span>
+              </div>
+              <div class="shortcut-row">
+                <kbd>+</kbd><kbd>−</kbd> <span>Zoom In / Out</span>
+              </div>
+              <div class="shortcut-row">
+                <kbd>0</kbd> <span>Reset Zoom</span>
+              </div>
+              <div class="shortcut-row">
+                <kbd>G</kbd> <span>Jump to Page</span>
+              </div>
+              <div class="shortcut-row">
+                <kbd>L</kbd> <span>Back to Library</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+       STATS PANEL
+  ════════════════════════════════════════════ -->
+    <div
+      class="overlay-panel"
+      id="stats-panel"
+      role="dialog"
+      aria-label="Reading statistics"
+      aria-modal="true"
+      style="display: none"
+    >
+      <div class="panel-card wide">
+        <div class="panel-header">
+          <h2>Reading Insights</h2>
+          <button
+            class="btn-icon panel-close"
+            id="stats-close"
+            aria-label="Close stats"
+          >
+            ×
+          </button>
+        </div>
+        <div class="stats-body" id="stats-body"></div>
+      </div>
+    </div>
+
+    <!-- Break Reminder Toast -->
+    <div class="toast" id="break-toast" style="display: none">
+      <div class="toast-icon">☕</div>
+      <div class="toast-content">
+        <p class="toast-title">Take a break</p>
+        <p class="toast-sub">
+          You've been reading for 30 minutes. Rest your eyes.
+        </p>
+      </div>
+      <button class="toast-close" id="break-dismiss" aria-label="Dismiss">
+        ×
+      </button>
+    </div>
+
+    <!-- Blue light overlay -->
+    <div
+      class="blue-light-overlay"
+      id="blue-light-overlay"
+      style="display: none"
+    ></div>
+
+    <!-- PDF.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- App Scripts -->
+    <script src="/js/storage.js"></script>
+    <script src="/js/stats.js"></script>
+    <script src="/js/themes.js"></script>
+    <script src="/js/reader.js"></script>
+    <script src="/js/library.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
